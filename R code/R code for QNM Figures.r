@@ -1,6 +1,8 @@
 
 #FIGURES----------------------------      
 source("R code upload for QNM.r")
+#or, load output files
+
 
 #Fig S2.1 Outcomes from H1-H6, Base and Mammal, for all nodes----------
 #Base network
@@ -43,7 +45,7 @@ mtext(side=1,outer=T,"Mean outcome")
 
 
 #Fig 4. XY graph of spring and fall outcomes for all H -----------
-# allXP<-read.csv(file="outputs/GCB outputs/allXP.csv",row.names = NULL)     
+ allXP<-read.csv(file="R code/outputs/allXP.csv",row.names = NULL)     
 myplot <- ggplot(allXP[allXP$Model %in% c("Base","Mammals"),], aes(x= SprCh, y = FallCh,col=Hdescription2)) + 
      geom_point( size = 3) +  xlab("Spring Chinook Adults") + ylab("Fall Chinook Adults") +
      geom_smooth(aes( y=FallCh), method="lm", formula = y~x, se = FALSE) +
@@ -121,7 +123,7 @@ fallbox.FW<- ggplot(dat, aes(Model, FallCh)) +
               alpha = .4,fill = "red")+
      annotate(
           "text", label = "H1",
-          x = c(1,2,4,5), y = c(0.59,0.49,0.57,0.47), size = 4, colour = "black") +
+          x = c(1,2,4,5, 6), y = c(0.59,0.49,0.57,0.47,0.37), size = 4, colour = "black") +
      theme_classic(base_size = 15) +
      theme(axis.text.x = element_text(vjust=1,hjust = 1,angle=45),
            plot.title = element_text(vjust=-15,hjust = 0.5)) 
@@ -172,23 +174,23 @@ fallbox<- ggplot(dat, aes(Hdescription2, FallCh)) +
 
 
 sprbox.T<-ggdraw(sprbox) + 
-     draw_image(sealion, x = 0.9, y =0.42, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
-     draw_image(sealion, x = 0.8, y =0.44, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) + 
-     draw_image(sealion, x = 0.7, y =0.50, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2)  +
-     draw_image(sealion, x = 0.5, y =0.58, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2)+
-     draw_image(sealion, x = 0.4, y =0.71, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) 
+     draw_image(sealion, x = 0.88, y =0.43, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
+     draw_image(sealion, x = 0.77, y =0.45, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) + 
+     draw_image(sealion, x = 0.66, y =0.50, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2)  +
+     draw_image(sealion, x = 0.45, y =0.58, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2)+
+     draw_image(sealion, x = 0.34, y =0.79, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) 
 
 
 fallbox.T<-
      ggdraw(fallbox) +
      draw_image(bird, x = 0.7, y =0.77, hjust = 0.8, vjust = 1.1, width = 0.06, height = 0.2)+
-     draw_image(bird, x = 0.8, y =0.75, hjust = 0.8, vjust = 1.1, width = 0.06, height = 0.2)+
-     draw_image(bird, x = 0.9, y =0.63, hjust = 0.8, vjust = 1.1, width = 0.06, height = 0.2)+
-     draw_image(sealion, x = 0.4, y =0.77, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
-     draw_image(sealion, x = 0.5, y =0.55, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
-     draw_image(sealion, x = 0.7, y =0.53, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
-     draw_image(sealion, x = 0.8, y =0.5, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
-     draw_image(sealion, x = 0.9, y =0.42, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) 
+     draw_image(bird, x = 0.8, y =0.76, hjust = 0.8, vjust = 1.1, width = 0.06, height = 0.2)+
+     draw_image(bird, x = 0.91, y =0.64, hjust = 0.8, vjust = 1.1, width = 0.06, height = 0.2)+
+     draw_image(sealion, x = 0.36, y =0.77, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
+     draw_image(sealion, x = 0.45, y =0.55, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
+     draw_image(sealion, x = 0.67, y =0.53, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
+     draw_image(sealion, x = 0.78, y =0.5, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) +
+     draw_image(sealion, x = 0.89, y =0.44, hjust = 0.8, vjust = 1.1, width = 0.08, height = 0.2) 
 
 
 bottom.T <- textGrob("Temperature hypothesis", gp = gpar(fontsize = 20))

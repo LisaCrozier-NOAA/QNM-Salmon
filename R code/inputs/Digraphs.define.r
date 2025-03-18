@@ -15,7 +15,7 @@ mytitle.list<-c("Base",
 #Define digraphs ----------
      digraphname="base"; mytitle="Base";target="Base"
      model="HypoLayers null11.birdsSSLnocond.nolayers.dia"
-     digraph.base<-extract.digraph(dia=paste0("inputs/",model))
+     digraph.base<-extract.digraph(dia=paste0("R code/inputs/",model))
      
      digraphname="g1.d2d4"; mytitle="Mammals: Positive impact from consuming adult salmon removed";target="Mammals"
      n=grepl("(?=.*Pred)(?=.*adult)",digraph.base,perl=TRUE);digraph.base[n]

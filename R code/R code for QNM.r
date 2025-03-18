@@ -3,8 +3,6 @@
 #Authors:  Crozier, L.G, D. G. E. Gomes, D. D. Huff
 #Published in Global Change Biology in 2025
 #This code was last updated on March 10, 2025
-getwd()
-setwd("C:/Users/Lisa.Crozier/Documents/Marine survival/QNM/GCB Submission Sep 2024/R code")
 rm(list=ls())
 
 #Packages for QNM
@@ -32,15 +30,15 @@ library(ggh4x) #for facet_nested and guide_axis_nested in BRT graph
 
 #Custom-made functions
 Hlist<-c("Prey","Condition","Competitors","JuvPredators","AllPredators","All")
-source("inputs/Functions.network.FY25.r")
-source("inputs/Digraphs.define.r")
-source("inputs/BRT.fxn.r")
-source("inputs/BRT.topvar.fxn.r")
+source("R code/inputs/Functions.network.FY25.r")
+source("R code/inputs/Digraphs.define.r")
+source("R code/inputs/BRT.fxn.r")
+source("R code/inputs/BRT.topvar.fxn.r")
 
 
 #Input files------
 model="HypoLayers null11.birdsSSLnocond.nolayers.dia"
-digraph.base<-extract.digraph(dia=paste0("inputs/",model))
+digraph.base<-extract.digraph(dia=paste0("R code/inputs/",model))
 
 #Run SST H -----------
      SST.H.simulate.fxn(mydigraph=digraph.base,nsim=1000,digraphname="base")
@@ -70,7 +68,7 @@ digraph.base<-extract.digraph(dia=paste0("inputs/",model))
      }
      
      #save table     
-      write.csv(allXP,file="outputs/allXP.csv",row.names = FALSE)     
+      # write.csv(allXP,file="outputs/allXP.csv",row.names = FALSE)     
      
      
 #Table TS4: Stability indices of all food webs --------
@@ -80,7 +78,7 @@ digraph.base<-extract.digraph(dia=paste0("inputs/",model))
      TS4
      
      #save table     
-      write.csv(TS4,file="outputs/TS4.csv",row.names = FALSE)     
+      # write.csv(TS4,file="outputs/TS4.csv",row.names = FALSE)     
      
 #Table TS5: Impact on all nodes -----------
      TS5.meanimpacts<-data.frame(Node=node.labels(H1.sim.base$edges))
@@ -92,17 +90,17 @@ digraph.base<-extract.digraph(dia=paste0("inputs/",model))
      TS5.meanimpacts
      
      #save table     
-      write.csv(TS5.meanimpacts,file="outputs/TS5.meanimpacts.csv",row.names = FALSE)     
+      # write.csv(TS5.meanimpacts,file="outputs/TS5.meanimpacts.csv",row.names = FALSE)     
      
 #Table TS6 One-at-a-time analysis of adding a climate press to each node, outcomes for salmon ----------     
      nsim=10000
-      mylabels=substr(nodes, start = 1, stop = 2)
-      mylabels[21:22]<-c("H1","H2")
       
 
      for(d in 1:2){
           sim<-get(paste0("H1.sim.",digraph.list[d]))
           nodes<-node.labels(sim$edges)
+           mylabels=substr(nodes, start = 1, stop = 2)
+           mylabels[21:22]<-c("H1","H2")
           nodes.testable<-4:length(nodes) 
      #Set up data frame     
           H1.allpress<-data.frame(Node=nodes, Press=1,Network=target.list[d],SpringPos=NA,FallPos=NA,SpringNeg=NA,FallNeg=NA)
@@ -147,64 +145,64 @@ digraph.base<-extract.digraph(dia=paste0("inputs/",model))
      head(H1.allpress)  
      
      #save table     
-      write.csv(H1.allpress,file="outputs/TS6.H1.allpress.csv",row.names = FALSE)     
+      # write.csv(H1.allpress,file="outputs/TS6.H1.allpress.csv",row.names = FALSE)     
       
 #BRT analysis -------------------------------------------------------------------          
       #run sims of desired size
-      model="HypoLayers null11.birdsSSLnocond.nolayers.dia"
-      digraph.base<-extract.digraph(dia=paste0("dia/",model))
-      nsim=10000
-      set.seed(nsim)
-      for (d in 1:2){
-           SST.H.simulate.fxn(mydigraph=get(paste("digraph",digraphname,sep=".")),nsim=nsim,digraphname=digraph.list[d])
-      }
-      
-      #run BRT model for spring and fall run, 3 temperature hypotheses, base and mammal food webs (slow)
-      for (h in c(1,5,6)){
-           for (dd in c("base","g1.d2d4")){
-                BRT.fxn(hh=h,digraphname=dd,tc=10,lr=0.01,nsim=1000)
-           }}
-      
-      #Extract the most influential variables from each model
-      brt<-data.frame(run="Spring",MG="C10",H="H1",model="Base",simname=NA,link=NA,influence=NA,cumsum=0,rank=1,color=NA);brt
-      brt.spr<-brt.fall<-brt[-1,]
-      
-      
-      for (hh in c(1,5,6)){
-           for (dd in c("null","g1.d2d4")){
-                digraphname=dd
-                tc=10;lr=0.01
-                
-                simname=paste0("H",hh,".sim.",digraphname)
-                spr.modelname=paste0("spr.",simname,".C10",".tc",tc,".lr",lr);modelname<-spr.modelname
-                print(modelname)
-                load(paste("outputs/BRT",modelname,"10000.Rdata",sep="."),verbose=T)
-                x<-BRT.topvar.fxn(modelname,pct=25)
-                
-                topvar2<-x
-                names(topvar2)<-c("link","influence","cumsum","rank","color")
-                topvar2[1,c("run","MG","H","model","simname")]<-c("Spring","C10",hh,dd,simname);topvar2
-                topvar2 <- topvar2 %>% fill(c("run","MG","H","model","simname"), .direction = "down")
-                brt.spr<-rbind(brt.spr,topvar2)
-                
-                fall.modelname=paste0("fall.",simname,".C10",".tc",tc,".lr",lr);modelname<-fall.modelname
-                print(modelname)
-                load(paste("outputs/BRT",modelname,"10000.Rdata",sep="."),verbose=T)
-                x<-BRT.topvar.fxn(modelname,pct=25);x
-                topvar2<-x
-                names(topvar2)<-c("link","influence","cumsum","rank","color")
-                topvar2[1,c("run","MG","H","model","simname")]<-c("Fall",".C10",hh,dd,simname);topvar2
-                topvar2 <- topvar2 %>% fill(c("run","MG","H","model","simname"), .direction = "down")
-                brt.fall<-rbind(brt.fall,topvar2);brt.fall
-           }}
-      brt.spr
-      brt.fall      
-      
-      brt.spr<-brt.spr[!duplicated(brt.spr),]
-      brt.fall<-brt.fall[!duplicated(brt.fall),]
+      # model="HypoLayers null11.birdsSSLnocond.nolayers.dia"
+      # digraph.base<-extract.digraph(dia=paste0("dia/",model))
+      # nsim=10000
+      # set.seed(nsim)
+      # for (d in 1:2){
+      #      SST.H.simulate.fxn(mydigraph=get(paste("digraph",digraphname,sep=".")),nsim=nsim,digraphname=digraph.list[d])
+      # }
+      # 
+      # #run BRT model for spring and fall run, 3 temperature hypotheses, base and mammal food webs (slow)
+      # for (h in c(1,5,6)){
+      #      for (dd in c("base","g1.d2d4")){
+      #           BRT.fxn(hh=h,digraphname=dd,tc=10,lr=0.01,nsim=1000)
+      #      }}
+      # 
+      # #Extract the most influential variables from each model
+      # brt<-data.frame(run="Spring",MG="C10",H="H1",model="Base",simname=NA,link=NA,influence=NA,cumsum=0,rank=1,color=NA);brt
+      # brt.spr<-brt.fall<-brt[-1,]
+      # 
+      # 
+      # for (hh in c(1,5,6)){
+      #      for (dd in c("null","g1.d2d4")){
+      #           digraphname=dd
+      #           tc=10;lr=0.01
+      #           
+      #           simname=paste0("H",hh,".sim.",digraphname)
+      #           spr.modelname=paste0("spr.",simname,".C10",".tc",tc,".lr",lr);modelname<-spr.modelname
+      #           print(modelname)
+      #           load(paste("outputs/BRT",modelname,"10000.Rdata",sep="."),verbose=T)
+      #           x<-BRT.topvar.fxn(modelname,pct=25)
+      #           
+      #           topvar2<-x
+      #           names(topvar2)<-c("link","influence","cumsum","rank","color")
+      #           topvar2[1,c("run","MG","H","model","simname")]<-c("Spring","C10",hh,dd,simname);topvar2
+      #           topvar2 <- topvar2 %>% fill(c("run","MG","H","model","simname"), .direction = "down")
+      #           brt.spr<-rbind(brt.spr,topvar2)
+      #           
+      #           fall.modelname=paste0("fall.",simname,".C10",".tc",tc,".lr",lr);modelname<-fall.modelname
+      #           print(modelname)
+      #           load(paste("outputs/BRT",modelname,"10000.Rdata",sep="."),verbose=T)
+      #           x<-BRT.topvar.fxn(modelname,pct=25);x
+      #           topvar2<-x
+      #           names(topvar2)<-c("link","influence","cumsum","rank","color")
+      #           topvar2[1,c("run","MG","H","model","simname")]<-c("Fall",".C10",hh,dd,simname);topvar2
+      #           topvar2 <- topvar2 %>% fill(c("run","MG","H","model","simname"), .direction = "down")
+      #           brt.fall<-rbind(brt.fall,topvar2);brt.fall
+      #      }}
+      # brt.spr
+      # brt.fall      
+      # 
+      # brt.spr<-brt.spr[!duplicated(brt.spr),]
+      # brt.fall<-brt.fall[!duplicated(brt.fall),]
       
      #Save results      
-      write.csv(brt.spr,file="outputs/brt.spr.allvar.csv")
-      write.csv(brt.fall,file="outputs/brt.fall.allvar.csv")
+      # write.csv(brt.spr,file="outputs/brt.spr.allvar.csv")
+      # write.csv(brt.fall,file="outputs/brt.fall.allvar.csv")
       
  
